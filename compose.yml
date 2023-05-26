@@ -1,0 +1,36 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ./angular-8-client 
+    ports:
+      - 8081:8081
+    networks:
+      - net-app  
+
+  backend:
+    build:
+      context: ./spring-boot-server
+    ports:
+      - 8081:8081
+    networks:
+      - net-app  
+    depends_on:
+      - db
+      
+
+  db:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+    networks:
+      - net-app
+
+    
+  networks:
+    net-app: 
