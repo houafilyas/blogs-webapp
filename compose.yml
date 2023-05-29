@@ -14,7 +14,9 @@ services:
       MYSQL_DATABASE: 'tutorials'
     ports:
       - 3306:3306 #Forwars the exposed port 3306 on the container to port 3306 on the host machine
-    
+    networks:
+      mynetwork:
+        ipv4_address: 192.168.0.2
   #Back-end Spring Boot Application
   springboot-app:
     #The docker file in BE, build the jar and provides the docker image.
@@ -27,16 +29,29 @@ services:
       MYSQL_PASSWORD: '123456'
       MYSQL_DATABASE: 'tutorials'
     ports:
-      - 8081:8081 #Forwars the exposed port 8080 on the container to port 8080 on the host machine
-    links:
+      - 8080:8080 #Forwars the exposed port 8080 on the container to port 8080 on the host machine
+    networks:
+      mynetwork:
+        ipv4_address: 192.168.0.3
+    depends_on:
       - mysql-db
 
-  #Front-end Angular Application
+
   angular-app:
     #The docker file in FE, builds and provides the docker image.
     build: ./angular-8-client
     container_name: angular-app
     ports:
-      - 8081:8081 #Forwars the exposed port 4200 on the container to port 4200 on the host machine
-    links:
-      - springboot-app
+      - 8081:8081 #Forwars the exposed port 8081 on the container to port 8081 on the host machine
+    networks:
+      mynetwork:
+        ipv4_address: 192.168.0.4  
+
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24
+

@@ -6,16 +6,19 @@ RUN mkdir /app
 WORKDIR /app
 
 # Copy the POM file to the container
-COPY ./pom.xml /app/pom.xml
-
+COPY . /app
 
 # Download the project dependencies
-RUN mvn dependency:go-offline -B
+#RUN mvn dependency:go-offline -B
 
 # Copy the application source code to the container
 COPY ./src /app/src
 
+#Expose the port
+EXPOSE 8080
+
 # Build the application
+
 RUN mvn package
 
 # Set the entrypoint command to run the application
